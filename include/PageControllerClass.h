@@ -40,7 +40,12 @@ class PageController {
         void NavigateTo(int index){
             if(index == currPage)
                 return;
+            
+            if(currPage != -1)
+                pages[currPage]->Hide();
+
             currPage = index;
+
             pages[currPage]->Show();
         }
 
