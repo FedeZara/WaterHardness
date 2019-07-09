@@ -4,13 +4,17 @@
 #include "Adafruit_ILI9341.h"
 #include <Wire.h>
 #include "Adafruit_TCS34725.h"
+#include "EEPROM.h"
 
+#include "CalibrationData.h"
 #include "LabelClass.h"
 #include "ButtonClass.h"
 #include "PageClass.h"
 #include "PageControllerClass.h"
 
 #include "MainPage.h"
+#include "StartCalibrationPage.h"
+#include "EndCalibrationPage.h"
 #include "CalibrationPage.h"
 #include "MeasurementPage.h"
 
@@ -45,6 +49,8 @@ Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS347
 void DefinePages();
 
 PageController* pageController;
+
+CalibrationData calData;
 
 void setup()
 {
@@ -81,16 +87,19 @@ void setup()
 
   DefinePages(); 
 
-  pageController->NavigateTo(0);
+  pageController->NavigateTo(1);
 }
 
 void DefinePages(){
   pageController = new PageController();
   pageController->SetTft(tft);
   pageController->SetTs(ts);
-  pageController->SetNumPages(3);
-  CreateMainPage();
+  pageController->SetNumPages(5);
+
+  CreateStartCalibrationPage();
   CreateCalibrationPage();
+  CreateEndCalibrationPage();
+  CreateMainPage();
   CreateMeasurementPage();
 }
 

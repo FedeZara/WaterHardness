@@ -1,60 +1,44 @@
 extern PageController* pageController;
 extern Adafruit_TCS34725 tcs;
 extern Adafruit_ILI9341* tft;
+extern CalibrationData calData;
 
 Button *nextBtn;
-Label *redLbl, *blueLbl, *greenLbl, *cLbl, *colorTempLbl, *luxLbl;
+Label *tipLbl;
+Label *concLbl;
 
-uint16_t r, g, b, c, colorTemp, lux;
+double currConc;
+int count;
+
 void TakeMeasure(){
-    uint16_t old_r = r;
-    
-    tcs.getRawData(&r, &g, &b, &c);
-    colorTemp = tcs.calculateColorTemperature_dn40(r, g, b, c);
-    lux = tcs.calculateLux(r, g, b);
+    if(count == -1){        
+        nextBtn->SetText("Calibrate");
+        tipLbl->SetText("Insert the phial with the\n hardness written below.");
+    }
+    else {
+        uint16_t r, g, b, c, lux;
+        tcs.getRawData(&r, &g, &b, &c);
+        lux = tcs.calculateLux(r, g, b);
 
-    if(old_r == 0){        
-        nextBtn->SetText("Next");
+        calData.data[count] = double(c) / double(lux);
+        currConc += 0.24;
+
+        if(count == 15){
+            pageController->NavigateTo(3);
+            return;
+        }
     }
     
-    String temp = "Color Temp: " + String(colorTemp, DEC);
-    colorTempLbl->SetText(temp + " K ");
-    luxLbl->SetText("Lux: " + String(lux, DEC));
-    redLbl->SetText("R: " + String(r, DEC));
-    blueLbl->SetText("G: " + String(g, DEC));
-    greenLbl->SetText("B: " + String(b, DEC));
-    cLbl->SetText("C: " + String(c, DEC));
-
-    Serial.print("Color Temp: ");
-    Serial.print(colorTemp, DEC);
-    Serial.print(" K - ");
-    Serial.print("Lux: ");
-    Serial.print(lux, DEC);
-    Serial.print(" - ");
-    Serial.print("R: ");
-    Serial.print(r, DEC);
-    Serial.print(" ");
-    Serial.print("G: ");
-    Serial.print(g, DEC);
-    Serial.print(" ");
-    Serial.print("B: ");
-    Serial.print(b, DEC);
-    Serial.print(" ");
-    Serial.print("C: ");
-    Serial.print(c, DEC);
-    Serial.print(" ");
-    Serial.println(" ");
+    concLbl->SetText(String(currConc) + " F");
+    count++;
 }
 
 void CalibrationPage_OnSetup(){
-    r = 0;
     nextBtn->SetText("Start");
-    colorTempLbl->SetText("");
-    luxLbl->SetText("");
-    redLbl->SetText("");
-    greenLbl->SetText("");
-    blueLbl->SetText("");
-    cLbl->SetText("");
+    tipLbl->SetText("Press on 'Start' in order to start calibration.");
+    concLbl->SetText("");
+    currConc = 2.40;
+    count = -1;
 }
 
 void NextBtn_OnClick(){
@@ -79,7 +63,7 @@ void CreateCalibrationPage()
     backBtn->SetText("<- Back");
 
     // defining NextBtn
-    nextBtn = new Button(180, 155, 120, 75, true);
+    nextBtn = new Button(110, 155, 190, 75, true);
     nextBtn->BorderColor = ILI9341_DARKGREEN;
     nextBtn->Color = ILI9341_GREEN;
     nextBtn->OnClick = NextBtn_OnClick;
@@ -89,37 +73,21 @@ void CreateCalibrationPage()
     nextBtn->SetText("Start");
     
     // defining Labels
-    colorTempLbl = new Label(2, 35, 2);
-    colorTempLbl->TextColor = ILI9341_BLACK;
+    tipLbl = new Label(2, 35, 2);
+    tipLbl->TextColor = ILI9341_BLACK;
 
-    luxLbl = new Label(2, 51, 2);
-    luxLbl->TextColor = ILI9341_GREENYELLOW;
-
-    redLbl = new Label(2, 67, 2);
-    redLbl->TextColor = ILI9341_RED;
-
-    greenLbl = new Label(2, 83, 2);
-    greenLbl->TextColor = ILI9341_GREEN;
-
-    blueLbl = new Label(2, 99, 2);
-    blueLbl->TextColor = ILI9341_BLUE;
-
-    cLbl = new Label(2, 115, 2);
-    cLbl->TextColor = ILI9341_BLACK;
+    concLbl = new Label(2, 105, 2);
+    concLbl->TextColor = ILI9341_BLACK;
 
     Page* calibrationPage = new Page();
     calibrationPage->SetNumButtons(2);
     calibrationPage->AddButton(backBtn, 0);
     calibrationPage->AddButton(nextBtn, 1);
 
-    calibrationPage->SetNumLabels(6);
-    calibrationPage->AddLabel(colorTempLbl, 0);
-    calibrationPage->AddLabel(luxLbl, 1);
-    calibrationPage->AddLabel(redLbl, 2);
-    calibrationPage->AddLabel(greenLbl, 3);
-    calibrationPage->AddLabel(blueLbl, 4);
-    calibrationPage->AddLabel(cLbl, 5);
+    calibrationPage->SetNumLabels(2);
+    calibrationPage->AddLabel(tipLbl, 0);
+    calibrationPage->AddLabel(concLbl, 1);
 
     calibrationPage->Setup = CalibrationPage_OnSetup;
-    pageController->AddPage(calibrationPage, 1);
+    pageController->AddPage(calibrationPage, 2);
 }

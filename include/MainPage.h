@@ -7,7 +7,7 @@ void CalibrationBtn_OnClick()
 
 void MeasurementBtn_OnClick()
 {
-    pageController->NavigateTo(2);
+    pageController->NavigateTo(4);
 }
 
 void CreateMainPage()

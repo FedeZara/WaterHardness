@@ -22,5 +22,5 @@ void CreateMeasurementPage()
     Page* measurementPage = new Page();
     measurementPage->SetNumButtons(1);
     measurementPage->AddButton(backBtn, 0);
-    pageController->AddPage(measurementPage, 2);
+    pageController->AddPage(measurementPage, 4);
 }

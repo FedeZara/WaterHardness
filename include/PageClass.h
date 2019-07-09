@@ -96,7 +96,7 @@ class Page {
                 ts->read();
                 x = ts->getX();
                 y = ts->getY();
-                Serial.print(x); Serial.print(" "); Serial.println(y);
+                //Serial.print(x); Serial.print(" "); Serial.println(y);
                 for(int i=0; i<numButtons; i++){
                     buttons[i]->ExecuteIfClicked(x, y);
                 }
