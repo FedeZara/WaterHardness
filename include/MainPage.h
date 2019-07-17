@@ -1,43 +1,49 @@
-extern PageController* pageController;
+extern PageController pageController;
 
-void CalibrationBtn_OnClick()
-{
-    pageController->NavigateTo(1);
-}
+class MainPage : public Page{
+    protected: 
+        void Setup() override{
+            Page::Setup();
 
-void MeasurementBtn_OnClick()
-{
-    pageController->NavigateTo(4);
-}
+            SetNumButtons(2);
 
-void CreateMainPage()
-{
-    // defining CalibrationBtn
-    Button *calibrationBtn = new Button(40, 30, 240, 75, true);
-    calibrationBtn->BorderColor = ILI9341_DARKGREEN;
-    calibrationBtn->Color = ILI9341_GREEN;
-    calibrationBtn->OnClick = CalibrationBtn_OnClick;
-    calibrationBtn->SetFontSize(3);
-    calibrationBtn->SetTextPos(23, 27);
-    calibrationBtn->SetTextColor(ILI9341_DARKGREEN);
-    calibrationBtn->SetText("Calibration");
+            // defining CalibrationBtn
+            buttons[0] = Button(40, 30, 240, 75, true);
+            buttons[0].BorderColor = ILI9341_DARKGREEN;
+            buttons[0].Color = ILI9341_GREEN;
+            buttons[0].SetFontSize(3);
+            buttons[0].SetTextPos(23, 27);
+            buttons[0].SetTextColor(ILI9341_DARKGREEN);
+            buttons[0].SetText(F("Calibration"));
 
-    // defining MeasurementBtn
-    Button *measurementBtn = new Button(40, 135, 240, 75, true);
-    measurementBtn->BorderColor = ILI9341_DARKCYAN;
-    measurementBtn->Color = ILI9341_CYAN;
-    measurementBtn->OnClick = MeasurementBtn_OnClick;
-    measurementBtn->SetFontSize(3);
-    measurementBtn->SetTextPos(23, 27);
-    measurementBtn->SetTextColor(ILI9341_DARKCYAN);
-    measurementBtn->SetText("Measurement");
+            // defining MeasurementBtn
+            buttons[1] = Button(40, 135, 240, 75, true);
+            buttons[1].BorderColor = ILI9341_DARKCYAN;
+            buttons[1].Color = ILI9341_CYAN;
+            buttons[1].SetFontSize(3);
+            buttons[1].SetTextPos(23, 27);
+            buttons[1].SetTextColor(ILI9341_DARKCYAN);
+            buttons[1].SetText(F("Measurement"));
+        }
 
-    Page *mainPage = new Page();
-    mainPage->SetNumButtons(2);
-    mainPage->AddButton(calibrationBtn, 0);
-    mainPage->AddButton(measurementBtn, 1);
+        void ExecuteButton(int index) override{
+            switch(index){
+                case 0:
+                    CalibrationBtn_OnClick();
+                    break;
+                case 1:
+                    MeasurementBtn_OnClick();
+                    break;
+            }
+        }
 
+        void CalibrationBtn_OnClick()
+        {
+            pageController.NavigateTo(1);
+        }
 
-
-    pageController->AddPage(mainPage, 0);
-}
+        void MeasurementBtn_OnClick()
+        {
+            pageController.NavigateTo(4);
+        }
+};

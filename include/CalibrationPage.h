@@ -1,93 +1,94 @@
-extern PageController* pageController;
+extern PageController pageController;
 extern Adafruit_TCS34725 tcs;
-extern Adafruit_ILI9341* tft;
+extern Adafruit_ILI9341 tft;
 extern CalibrationData calData;
 
-Button *nextBtn;
-Label *tipLbl;
-Label *concLbl;
+class CalibrationPage : public Page{
+    protected:
+        double currConc;
+        int count;
 
-double currConc;
-int count;
+        void Setup() override{
+            Page::Setup();
 
-void TakeMeasure(){
-    if(count == -1){        
-        nextBtn->SetText("Calibrate");
-        tipLbl->SetText("Insert the phial with the\n hardness written below.");
-    }
-    else {
-        uint16_t r, g, b, c, lux;
-        tcs.getRawData(&r, &g, &b, &c);
-        lux = tcs.calculateLux(r, g, b);
+            SetNumButtons(2);
 
-        calData.data[count] = double(c) / double(lux);
-        currConc += 0.24;
+            // defining BackBtn
+            buttons[0] = Button(2, 2, 60, 30, true);
+            buttons[0].BorderColor = ILI9341_DARKGREY;
+            buttons[0].Color = ILI9341_LIGHTGREY;
+            buttons[0].SetFontSize(1);
+            buttons[0].SetTextPos(11, 12);
+            buttons[0].SetTextColor(ILI9341_DARKGREY);
+            buttons[0].SetText(F("<- Back"));
 
-        if(count == 15){
-            pageController->NavigateTo(3);
-            return;
+            // defining NextBtn
+            buttons[1] = Button(137, 167, 150, 50, true);
+            buttons[1].BorderColor = ILI9341_DARKGREEN;
+            buttons[1].Color = ILI9341_GREEN;
+            buttons[1].SetFontSize(2);
+            buttons[1].SetTextPos(22, 17);
+            buttons[1].SetTextColor(ILI9341_DARKGREEN);
+            buttons[1].SetText(F("Start"));
+
+            SetNumLabels(2);
+
+            // defining Labels
+            labels[0] = Label(12, 50, 2);
+            labels[0].TextColor = ILI9341_BLACK;
+            labels[0].SetText(F("Press on 'Start' in order to start calibration."));
+
+            labels[1] = Label(12, 182, 3);
+            labels[1].TextColor = ILI9341_BLACK;
+            labels[1].SetText("");
+
+            currConc = 2.40;
+            count = -1;
         }
-    }
-    
-    concLbl->SetText(String(currConc) + " F");
-    count++;
-}
 
-void CalibrationPage_OnSetup(){
-    nextBtn->SetText("Start");
-    tipLbl->SetText("Press on 'Start' in order to start calibration.");
-    concLbl->SetText("");
-    currConc = 2.40;
-    count = -1;
-}
+        void ExecuteButton(int index) override{
+            switch(index){
+                case 0:
+                    BackBtn_OnClick();
+                    break;
+                case 1:
+                    NextBtn_OnClick();
+                    break;
+            }
+        }
 
-void NextBtn_OnClick(){
-    TakeMeasure();
-}
+        void TakeMeasure(){
+            if(count == -1){        
+                buttons[1].SetText(F("Calibrate"));
+                labels[0].SetText(F("Insert the phial with the\n hardness written below.\n\n Then click 'Calibrate'."));
+            }
+            else {
+                uint16_t r, g, b, c;
+                tcs.getRawData(&r, &g, &b, &c);
 
-void CalibrationPage_BackBtn_OnClick()
-{
-    pageController->NavigateTo(0);
-}
+                calData.data[count].x = currConc;
+                calData.data[count].y = double(c);
 
-void CreateCalibrationPage()
-{
-    // defining BackBtn
-    Button *backBtn = new Button(2, 2, 60, 30, true);
-    backBtn->BorderColor = ILI9341_DARKGREY;
-    backBtn->Color = ILI9341_LIGHTGREY;
-    backBtn->OnClick = CalibrationPage_BackBtn_OnClick;
-    backBtn->SetFontSize(1);
-    backBtn->SetTextPos(11, 12);
-    backBtn->SetTextColor(ILI9341_DARKGREY);
-    backBtn->SetText("<- Back");
+                Serial.println(String(double(c)));
+                currConc += 0.24;
 
-    // defining NextBtn
-    nextBtn = new Button(110, 155, 190, 75, true);
-    nextBtn->BorderColor = ILI9341_DARKGREEN;
-    nextBtn->Color = ILI9341_GREEN;
-    nextBtn->OnClick = NextBtn_OnClick;
-    nextBtn->SetFontSize(3);
-    nextBtn->SetTextPos(22, 27);
-    nextBtn->SetTextColor(ILI9341_DARKGREEN);
-    nextBtn->SetText("Start");
-    
-    // defining Labels
-    tipLbl = new Label(2, 35, 2);
-    tipLbl->TextColor = ILI9341_BLACK;
+                if(count == 15){
+                    pageController.NavigateTo(3);
+                    return;
+                }
+            }
+            
+            labels[1].SetText(String(currConc) + " F");
+            count++;
+        }
 
-    concLbl = new Label(2, 105, 2);
-    concLbl->TextColor = ILI9341_BLACK;
+        void NextBtn_OnClick(){
+            TakeMeasure();
+        }
 
-    Page* calibrationPage = new Page();
-    calibrationPage->SetNumButtons(2);
-    calibrationPage->AddButton(backBtn, 0);
-    calibrationPage->AddButton(nextBtn, 1);
+        void BackBtn_OnClick()
+        {
+            pageController.NavigateTo(1);
+        }
+};
 
-    calibrationPage->SetNumLabels(2);
-    calibrationPage->AddLabel(tipLbl, 0);
-    calibrationPage->AddLabel(concLbl, 1);
-
-    calibrationPage->Setup = CalibrationPage_OnSetup;
-    pageController->AddPage(calibrationPage, 2);
-}

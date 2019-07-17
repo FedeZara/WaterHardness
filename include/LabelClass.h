@@ -1,7 +1,9 @@
+extern Adafruit_ILI9341 tft;
+extern URTouch ts;
+
 class Label {
     private:
         bool isVisible = false;
-        Adafruit_ILI9341 *tft;
         String text;
     public:    
         int X;
@@ -23,10 +25,6 @@ class Label {
 
         Label() : Label(0, 0, 2){}
 
-        void SetTft(Adafruit_ILI9341 *tft){
-            this->tft = tft;
-        }
-
         void SetText(String text){
             if(isVisible){
                 int prevTextColor = TextColor;
@@ -42,19 +40,15 @@ class Label {
         }
 
         void Show(){
-            if(tft == nullptr){
-                Serial.println("tft not defined");
-                return;
-            }
             isVisible = true;
             ShowText();
         }
 
         void ShowText(){
-            tft->setTextColor(TextColor);
-            tft->setTextSize(FontSize);
-            tft->setCursor(X, Y);    
-            tft->println(text);
+            tft.setTextColor(TextColor);
+            tft.setTextSize(FontSize);
+            tft.setCursor(X, Y);    
+            tft.println(text);
         }
 
         void Hide(){

@@ -1,7 +1,9 @@
+extern Adafruit_ILI9341 tft;
+extern URTouch ts;
+
 class Button {
     private:
         bool isVisible = false;
-        Adafruit_ILI9341 *tft;
         
         int textX;
         int textY;
@@ -20,7 +22,7 @@ class Button {
 
         bool HasBorder;
 
-        void (*OnClick)();
+        Button(){}
 
         Button(int x, int y, int width, int height, bool hasBorder){
             X = x;
@@ -63,43 +65,25 @@ class Button {
             }
         }
 
-        void SetTft(Adafruit_ILI9341 *tft){
-            this->tft = tft;
-        }
-
         bool CheckIfClicked(int x, int y){
             return x >= X && x <= X + Width && 
                y >= Y && y <= Y + Height;
         }
 
-        void Execute(){
-            OnClick();
-        }
-
-        void ExecuteIfClicked(int x, int y){
-            if(CheckIfClicked(x, y))
-                Execute();
-        }
-
         void Show(){
-            if(tft == nullptr){
-                Serial.println("tft not defined");
-                return;
-            }
-            
             isVisible = true;
-            tft->fillRect(X, Y, Width, Height, Color);
+            tft.fillRect(X, Y, Width, Height, Color);
             if(HasBorder)
-                tft->drawRect(X, Y, Width, Height, BorderColor);
+                tft.drawRect(X, Y, Width, Height, BorderColor);
             
             ShowText();
         }
 
         void ShowText(){
-            tft->setTextColor(textColor);
-            tft->setTextSize(fontSize);
-            tft->setCursor(textX, textY);    
-            tft->println(text);
+            tft.setTextColor(textColor);
+            tft.setTextSize(fontSize);
+            tft.setCursor(textX, textY);    
+            tft.println(text);
         }
 
         void Hide(){

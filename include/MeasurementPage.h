@@ -1,26 +1,86 @@
-extern PageController* pageController;
+extern PageController pageController;
 extern Adafruit_TCS34725 tcs;
-extern Adafruit_ILI9341* tft;
+extern Adafruit_ILI9341 tft;
+extern LinearRegression model;
+extern CalibrationData calData;
 
-void MeasurementPage_BackBtn_OnClick()
-{
-    pageController->NavigateTo(0);
-}
+class MeasurementPage : public Page {
+    protected:
+        int state;
 
-void CreateMeasurementPage()
-{
-    // defining BackBtn
-    Button *backBtn = new Button(2, 2, 60, 30, true);
-    backBtn->BorderColor = ILI9341_DARKGREY;
-    backBtn->Color = ILI9341_LIGHTGREY;
-    backBtn->OnClick = MeasurementPage_BackBtn_OnClick;
-    backBtn->SetFontSize(1);
-    backBtn->SetTextPos(11, 12);
-    backBtn->SetTextColor(ILI9341_DARKGREY);
-    backBtn->SetText("<- Back");
+        void Setup() override{
+            EEPROM.get(0, calData);
+            model = LinearRegression(16, calData.data);
 
-    Page* measurementPage = new Page();
-    measurementPage->SetNumButtons(1);
-    measurementPage->AddButton(backBtn, 0);
-    pageController->AddPage(measurementPage, 4);
-}
+            SetNumButtons(2);
+
+            // defining BackBtn
+            buttons[0] = Button(2, 2, 60, 30, true);
+            buttons[0].BorderColor = ILI9341_DARKGREY;
+            buttons[0].Color = ILI9341_LIGHTGREY;
+            buttons[0].SetFontSize(1);
+            buttons[0].SetTextPos(11, 12);
+            buttons[0].SetTextColor(ILI9341_DARKGREY);
+            buttons[0].SetText(F("<- Back"));
+
+            // defining NextBtn
+            buttons[1] = Button(172, 167, 125, 50, true);
+            buttons[1].BorderColor = ILI9341_DARKGREEN;
+            buttons[1].Color = ILI9341_GREEN;
+            buttons[1].SetFontSize(2);
+            buttons[1].SetTextPos(22, 17);
+            buttons[1].SetTextColor(ILI9341_DARKGREEN);
+            buttons[1].SetText(F("Measure"));
+
+            SetNumLabels(2);
+
+            // defining Labels
+            labels[0] = Label(12, 50, 2);
+            labels[0].TextColor = ILI9341_BLACK;
+            labels[0].SetText(F("Press on 'Measure' in\n order to measure the\n sample."));
+
+            labels[1] = Label(12, 120, 3);
+            labels[1].TextColor = ILI9341_BLUE;
+            labels[1].SetText("");
+
+            state = 1;
+        }
+
+        void ExecuteButton(int index) override{
+            switch(index){
+                case 0:
+                    BackBtn_OnClick();
+                    break;
+                case 1:
+                    NextBtn_OnClick();
+                    break;
+            }
+        }
+        
+        void BackBtn_OnClick()
+        {
+            pageController.NavigateTo(0);
+        }
+
+        void NextBtn_OnClick(){
+            if(state == 0){
+                state = 1;
+                labels[0].SetText(F("Press on 'Measure' in\n order to measure the\n sample."));
+                labels[1].SetText("");
+                buttons[1].SetText(F("Measure"));
+            }
+            else{
+                state = 0;
+
+                uint16_t r, g, b, c;
+                tcs.getRawData(&r, &g, &b, &c);
+                Serial.println(c);
+                double hardness = model.calculateX(c) * 10;
+
+                labels[1].SetText(String(hardness) + " F");
+                
+                labels[0].SetText(F("Press on 'New' and\n insert a new sample."));
+                buttons[1].SetText(F("New"));
+            }
+        }
+};

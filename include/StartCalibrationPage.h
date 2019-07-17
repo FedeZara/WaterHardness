@@ -1,66 +1,91 @@
-extern PageController* pageController;
+extern PageController pageController;
 extern CalibrationData calData;
+extern LinearRegression model;
 
-Page *startCalibrationPage;
+class StartCalibrationPage : public Page{
+    protected:
+        void Setup(){
+            Page::Setup();
+            EEPROM.get(0, calData);
 
-void StartYesBtn_OnClick()
-{
-    pageController->NavigateTo(2);
-}
+            if(calData.calibrationExists){
+                model = LinearRegression(16, calData.data);
 
-void StartNoBtn_OnClick()
-{
-    pageController->NavigateTo(0);
-}
+                SetNumButtons(2);
+                
+                // defining YesBtn
+                buttons[0] = Button(40, 160, 110, 50, true);
+                buttons[0].BorderColor = ILI9341_DARKGREEN;
+                buttons[0].Color = ILI9341_GREEN;
+                buttons[0].SetFontSize(2);
+                buttons[0].SetTextPos(40, 17);
+                buttons[0].SetTextColor(ILI9341_DARKGREEN);
+                buttons[0].SetText(F("Yes"));
 
-void StartCalibrationPage_OnSetup(){
-    EEPROM.get(0, calData);
+                // defining NoBtn
+                buttons[1] = Button(170, 160, 110, 50, true);
+                buttons[1].BorderColor = ILI9341_BLACK;
+                buttons[1].Color = ILI9341_RED;
+                buttons[1].SetFontSize(2);
+                buttons[1].SetTextPos(40, 17);
+                buttons[1].SetTextColor(ILI9341_BLACK);
+                buttons[1].SetText(F("No"));
 
-    if(calData.calibrationExists){
-        // defining YesBtn
-        Button *yesBtn = new Button(40, 30, 240, 75, true);
-        yesBtn->BorderColor = ILI9341_DARKGREEN;
-        yesBtn->Color = ILI9341_GREEN;
-        yesBtn->OnClick = StartYesBtn_OnClick;
-        yesBtn->SetFontSize(3);
-        yesBtn->SetTextPos(23, 27);
-        yesBtn->SetTextColor(ILI9341_DARKGREEN);
-        yesBtn->SetText("Yes");
+                SetNumLabels(2);
 
-        // defining NoBtn
-        Button *noBtn = new Button(40, 135, 240, 75, true);
-        noBtn->BorderColor = ILI9341_BLACK;
-        noBtn->Color = ILI9341_RED;
-        noBtn->OnClick = StartNoBtn_OnClick;
-        noBtn->SetFontSize(3);
-        noBtn->SetTextPos(23, 27);
-        noBtn->SetTextColor(ILI9341_BLACK);
-        noBtn->SetText("No");
+                //defining startCalPageInfoLbl
+                labels[0] = Label(12, 30, 2);
+                labels[0].TextColor = ILI9341_BLACK;
+                labels[0].SetText(F("Do you want to do a new\n calibration?"));
 
-        startCalibrationPage->SetNumButtons(2);
-        startCalibrationPage->AddButton(yesBtn, 0);
-        startCalibrationPage->AddButton(noBtn, 1);
-    }
-    else{
-        // defining OkBtn
-        Button *okBtn = new Button(40, 135, 240, 75, true);
-        okBtn->BorderColor = ILI9341_DARKGREEN;
-        okBtn->Color = ILI9341_GREEN;
-        okBtn->OnClick = StartYesBtn_OnClick;
-        okBtn->SetFontSize(3);
-        okBtn->SetTextPos(23, 27);
-        okBtn->SetTextColor(ILI9341_DARKGREEN);
-        okBtn->SetText("OK");
+                double m = model.getSlope(), b = model.getIntercept(), rSquared = model.getDetermination();
+                m = round(m*100.0) / 100.0;
+                b = round(b*100.0) / 100.0;
+                rSquared = round(rSquared*1000.0) / 1000.0;
 
-        startCalibrationPage->SetNumButtons(1);
-        startCalibrationPage->AddButton(okBtn, 0);
-    }
-}
+                labels[1] = Label(12, 90, 2);
+                labels[1].TextColor = ILI9341_BLUE;
+                labels[1].SetText("C = " + String(m, '\002') + " x F + " + String(b, '\002') + "\n\n R2 = " + String(rSquared, '\003'));
+            }
+            else{
+                SetNumButtons(1);
 
-void CreateStartCalibrationPage()
-{
-    startCalibrationPage = new Page();
-    startCalibrationPage->Setup = StartCalibrationPage_OnSetup;
+                // defining OkBtn
+                buttons[0] = Button(170, 160, 110, 50, true);
+                buttons[0].BorderColor = ILI9341_DARKGREEN;
+                buttons[0].Color = ILI9341_GREEN;
+                buttons[0].SetFontSize(2);
+                buttons[0].SetTextPos(40, 17);
+                buttons[0].SetTextColor(ILI9341_DARKGREEN);
+                buttons[0].SetText(F("OK"));
 
-    pageController->AddPage(startCalibrationPage, 1);
-}
+                SetNumLabels(1);
+
+                //defining startCalPageInfoLbl
+                labels[0] = Label(12, 30, 2);
+                labels[0].TextColor = ILI9341_BLACK;
+                labels[0].SetText(F("No calibrations found.\n\n Click on 'OK' to do a new one."));
+            }
+        }
+
+        void ExecuteButton(int index) override{
+            switch(index){
+                case 0:
+                    YesBtn_OnClick();
+                    break;
+                case 1:
+                    NoBtn_OnClick();
+                    break;
+            }
+        }
+
+        void YesBtn_OnClick()
+        {
+            pageController.NavigateTo(2);
+        }
+
+        void NoBtn_OnClick()
+        {
+            pageController.NavigateTo(0);
+        }
+};
