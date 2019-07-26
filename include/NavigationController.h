@@ -1,10 +1,10 @@
-class PageController {
+class NavigationController {
     private:
         Page** pages;
         int numPages;
         int currPage = -1;
     public:
-        PageController() {
+        NavigationController() {
             SetNumPages(0);
         } 
 

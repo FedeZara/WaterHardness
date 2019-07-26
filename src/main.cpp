@@ -11,10 +11,10 @@
 #include "Point.h"
 #include "CalibrationData.h"
 #include "LinearRegression.h"
-#include "LabelClass.h"
-#include "ButtonClass.h"
-#include "PageClass.h"
-#include "PageControllerClass.h"
+#include "Label.h"
+#include "Button.h"
+#include "Page.h"
+#include "NavigationController.h"
 
 #include "MainPage.h"
 #include "StartCalibrationPage.h"
@@ -52,7 +52,7 @@ Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS347
 
 void DefinePages();
 
-PageController pageController;
+NavigationController navigationController;
 
 CalibrationData calData;
 LinearRegression model;
@@ -101,20 +101,20 @@ void setup()
 
   Serial.println(freeMemory());
 
-  pageController.NavigateTo(1);
+  navigationController.NavigateTo(1);
 }
 
 void DefinePages(){
-  pageController.SetNumPages(5);
+  navigationController.SetNumPages(5);
 
-  pageController.AddPage(new MainPage(), 0);
-  pageController.AddPage(new StartCalibrationPage(), 1);
-  pageController.AddPage(new CalibrationPage(), 2);
-  pageController.AddPage(new EndCalibrationPage(), 3);
-  pageController.AddPage(new MeasurementPage(), 4);
+  navigationController.AddPage(new MainPage(), 0);
+  navigationController.AddPage(new StartCalibrationPage(), 1);
+  navigationController.AddPage(new CalibrationPage(), 2);
+  navigationController.AddPage(new EndCalibrationPage(), 3);
+  navigationController.AddPage(new MeasurementPage(), 4);
 }
 
 void loop(void)
 {
-  pageController.OnLoop();
+  navigationController.OnLoop();
 }

@@ -2,7 +2,7 @@ extern Adafruit_ILI9341 tft;
 extern URTouch ts;
 
 class Page {
-    friend class PageController;
+    friend class NavigationController;
     protected:
         bool isVisible = false;
 

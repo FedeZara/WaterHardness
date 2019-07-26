@@ -1,4 +1,4 @@
-extern PageController pageController;
+extern NavigationController navigationController;
 extern LinearRegression model;
 extern CalibrationData calData;
 
@@ -58,11 +58,11 @@ class EndCalibrationPage : public Page{
         {
             calData.calibrationExists = true;
             EEPROM.put(0, calData);
-            pageController.NavigateTo(0);
+            navigationController.NavigateTo(0);
         }
 
         void NoBtn_OnClick()
         {
-            pageController.NavigateTo(1);
+            navigationController.NavigateTo(1);
         }
 };

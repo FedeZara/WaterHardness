@@ -1,4 +1,4 @@
-extern PageController pageController;
+extern NavigationController navigationController;
 extern Adafruit_TCS34725 tcs;
 extern Adafruit_ILI9341 tft;
 extern CalibrationData calData;
@@ -57,7 +57,7 @@ class CalibrationPage : public Page{
             }
         }
 
-        void TakeMeasure(){
+        void NextCalibration(){
             if(count == -1){        
                 buttons[1].SetText(F("Calibrate"));
                 labels[0].SetText(F("Insert the phial with the\n hardness written below.\n\n Then click 'Calibrate'."));
@@ -73,7 +73,7 @@ class CalibrationPage : public Page{
                 currConc += 0.24;
 
                 if(count == 15){
-                    pageController.NavigateTo(3);
+                    navigationController.NavigateTo(3);
                     return;
                 }
             }
@@ -83,12 +83,12 @@ class CalibrationPage : public Page{
         }
 
         void NextBtn_OnClick(){
-            TakeMeasure();
+            NextCalibration();
         }
 
         void BackBtn_OnClick()
         {
-            pageController.NavigateTo(1);
+            navigationController.NavigateTo(1);
         }
 };
 

@@ -1,4 +1,4 @@
-extern PageController pageController;
+extern NavigationController navigationController;
 extern Adafruit_TCS34725 tcs;
 extern Adafruit_ILI9341 tft;
 extern LinearRegression model;
@@ -59,7 +59,7 @@ class MeasurementPage : public Page {
         
         void BackBtn_OnClick()
         {
-            pageController.NavigateTo(0);
+            navigationController.NavigateTo(0);
         }
 
         void NextBtn_OnClick(){

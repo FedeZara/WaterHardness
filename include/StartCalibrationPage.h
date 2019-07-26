@@ -1,4 +1,4 @@
-extern PageController pageController;
+extern NavigationController navigationController;
 extern CalibrationData calData;
 extern LinearRegression model;
 
@@ -81,11 +81,11 @@ class StartCalibrationPage : public Page{
 
         void YesBtn_OnClick()
         {
-            pageController.NavigateTo(2);
+            navigationController.NavigateTo(2);
         }
 
         void NoBtn_OnClick()
         {
-            pageController.NavigateTo(0);
+            navigationController.NavigateTo(0);
         }
 };

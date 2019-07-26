@@ -1,4 +1,4 @@
-extern PageController pageController;
+extern NavigationController navigationController;
 
 class MainPage : public Page{
     protected: 
@@ -39,11 +39,11 @@ class MainPage : public Page{
 
         void CalibrationBtn_OnClick()
         {
-            pageController.NavigateTo(1);
+            navigationController.NavigateTo(1);
         }
 
         void MeasurementBtn_OnClick()
         {
-            pageController.NavigateTo(4);
+            navigationController.NavigateTo(4);
         }
 };
