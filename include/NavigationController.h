@@ -26,8 +26,6 @@ class NavigationController {
 
             currPage = index;
 
-            Serial.println(currPage);
-
             pages[currPage]->Show();
         }
 

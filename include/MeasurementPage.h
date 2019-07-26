@@ -74,7 +74,6 @@ class MeasurementPage : public Page {
 
                 uint16_t r, g, b, c;
                 tcs.getRawData(&r, &g, &b, &c);
-                Serial.println(c);
                 double hardness = model.calculateX(c) * 10;
 
                 labels[1].SetText(String(hardness) + " F");

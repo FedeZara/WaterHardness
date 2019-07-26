@@ -69,7 +69,6 @@ class CalibrationPage : public Page{
                 calData.data[count].x = currConc;
                 calData.data[count].y = double(c);
 
-                Serial.println(String(double(c)));
                 currConc += 0.24;
 
                 if(count == 15){

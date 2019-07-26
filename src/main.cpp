@@ -43,9 +43,9 @@ Adafruit_ILI9341 tft = Adafruit_ILI9341(TFT_CS, TFT_DC, TFT_MOSI, TFT_CLK, TFT_R
 
 URTouch ts = URTouch(t_SCK, t_CS, t_MOSI, t_MISO, t_IRQ);
 
-/* Connect SCL    to analog 5
-   Connect SDA    to analog 4
-   Connect VDD    to 3.3V DC
+/* Connect SCL    to analog 5 (Arduino Uno) or digital 21 (Arduino Mega)
+   Connect SDA    to analog 4 (Arduino Uno) or digital 20 (Arduino Mega)
+   Connect VCC    to 5V DC
    Connect GROUND to common ground */
 
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
@@ -66,40 +66,18 @@ void setup()
   tft.begin();
   tft.setRotation(3);
 
-  /*// read diagnostics (optional but can help debug problems)
-  uint8_t x = tft.readcommand8(ILI9341_RDMODE);
-  Serial.print("Display Power Mode: 0x"); Serial.println(x, HEX);
-  x = tft.readcommand8(ILI9341_RDMADCTL);
-  Serial.print("MADCTL Mode: 0x"); Serial.println(x, HEX);
-  x = tft.readcommand8(ILI9341_RDPIXFMT);
-  Serial.print("Pixel Format: 0x"); Serial.println(x, HEX);
-  x = tft.readcommand8(ILI9341_RDIMGFMT);
-  Serial.print("Image Format: 0x"); Serial.println(x, HEX);
-  x = tft.readcommand8(ILI9341_RDSELFDIAG);
-  Serial.print("Self Diagnostic: 0x"); Serial.println(x, HEX); */
-
   ts.InitTouch();
   ts.setPrecision(PREC_EXTREME);
 
-  if (tcs.begin())
-  {
-    Serial.println("Found sensor");
-  }
-  else
-  {
-    Serial.println("No TCS34725 found ... check your connections");
-    while (1)
-      ;
-  }
+  tcs.begin();
 
   // Clear EEPROM 
+  // Suggested if using the device for the first time
   /* for (int i = 0 ; i < EEPROM.length() ; i++) {
       EEPROM.write(i, 0);
   }*/
 
   DefinePages(); 
-
-  Serial.println(freeMemory());
 
   navigationController.NavigateTo(1);
 }
