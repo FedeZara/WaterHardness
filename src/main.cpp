@@ -58,6 +58,7 @@ CalibrationData calData;
 LinearRegression model;
 
 double rSquared;
+double dilutionCoefficient = 10.0;
 
 void setup()
 {

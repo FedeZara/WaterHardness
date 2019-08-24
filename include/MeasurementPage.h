@@ -74,7 +74,7 @@ class MeasurementPage : public Page {
 
                 uint16_t r, g, b, c;
                 tcs.getRawData(&r, &g, &b, &c);
-                double hardness = model.calculateX(c) * 10;
+                double hardness = model.calculateX(c) * dilutionCoefficient;
 
                 labels[1].SetText(String(hardness) + " F");
                 
