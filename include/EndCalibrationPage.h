@@ -9,7 +9,6 @@ class EndCalibrationPage : public Page{
 
             SetNumButtons(2);
 
-            // defining YesBtn
             buttons[0] = Button(40, 175, 110, 50, true);
             buttons[0].BorderColor = ILI9341_DARKGREEN;
             buttons[0].Color = ILI9341_GREEN;
@@ -17,8 +16,7 @@ class EndCalibrationPage : public Page{
             buttons[0].SetTextPos(40, 17);
             buttons[0].SetTextColor(ILI9341_DARKGREEN);
             buttons[0].SetText(F("Yes"));
-
-            // defining NoBtn
+            
             buttons[1] = Button(170, 175, 110, 50, true);
             buttons[1].BorderColor = ILI9341_BLACK;
             buttons[1].Color = ILI9341_RED;

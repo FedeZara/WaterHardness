@@ -12,8 +12,7 @@ class StartCalibrationPage : public Page{
                 model = LinearRegression(16, calData.data);
 
                 SetNumButtons(2);
-                
-                // defining YesBtn
+
                 buttons[0] = Button(40, 160, 110, 50, true);
                 buttons[0].BorderColor = ILI9341_DARKGREEN;
                 buttons[0].Color = ILI9341_GREEN;
@@ -22,7 +21,6 @@ class StartCalibrationPage : public Page{
                 buttons[0].SetTextColor(ILI9341_DARKGREEN);
                 buttons[0].SetText(F("Yes"));
 
-                // defining NoBtn
                 buttons[1] = Button(170, 160, 110, 50, true);
                 buttons[1].BorderColor = ILI9341_BLACK;
                 buttons[1].Color = ILI9341_RED;
@@ -33,7 +31,6 @@ class StartCalibrationPage : public Page{
 
                 SetNumLabels(2);
 
-                //defining startCalPageInfoLbl
                 labels[0] = Label(12, 30, 2);
                 labels[0].TextColor = ILI9341_BLACK;
                 labels[0].SetText(F("Do you want to do a new\n calibration?"));
@@ -50,7 +47,6 @@ class StartCalibrationPage : public Page{
             else{
                 SetNumButtons(1);
 
-                // defining OkBtn
                 buttons[0] = Button(170, 160, 110, 50, true);
                 buttons[0].BorderColor = ILI9341_DARKGREEN;
                 buttons[0].Color = ILI9341_GREEN;
@@ -61,7 +57,6 @@ class StartCalibrationPage : public Page{
 
                 SetNumLabels(1);
 
-                //defining startCalPageInfoLbl
                 labels[0] = Label(12, 30, 2);
                 labels[0].TextColor = ILI9341_BLACK;
                 labels[0].SetText(F("No calibrations found.\n\n Click on 'OK' to do a new one."));

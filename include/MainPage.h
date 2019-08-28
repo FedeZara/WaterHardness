@@ -7,7 +7,6 @@ class MainPage : public Page{
 
             SetNumButtons(2);
 
-            // defining CalibrationBtn
             buttons[0] = Button(40, 30, 240, 75, true);
             buttons[0].BorderColor = ILI9341_DARKGREEN;
             buttons[0].Color = ILI9341_GREEN;
@@ -16,7 +15,7 @@ class MainPage : public Page{
             buttons[0].SetTextColor(ILI9341_DARKGREEN);
             buttons[0].SetText(F("Calibration"));
 
-            // defining MeasurementBtn
+    
             buttons[1] = Button(40, 135, 240, 75, true);
             buttons[1].BorderColor = ILI9341_DARKCYAN;
             buttons[1].Color = ILI9341_CYAN;

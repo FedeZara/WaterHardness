@@ -13,7 +13,6 @@ class CalibrationPage : public Page{
 
             SetNumButtons(2);
 
-            // defining BackBtn
             buttons[0] = Button(2, 2, 60, 30, true);
             buttons[0].BorderColor = ILI9341_DARKGREY;
             buttons[0].Color = ILI9341_LIGHTGREY;
@@ -22,7 +21,6 @@ class CalibrationPage : public Page{
             buttons[0].SetTextColor(ILI9341_DARKGREY);
             buttons[0].SetText(F("<- Back"));
 
-            // defining NextBtn
             buttons[1] = Button(137, 167, 150, 50, true);
             buttons[1].BorderColor = ILI9341_DARKGREEN;
             buttons[1].Color = ILI9341_GREEN;
@@ -33,7 +31,6 @@ class CalibrationPage : public Page{
 
             SetNumLabels(2);
 
-            // defining Labels
             labels[0] = Label(12, 50, 2);
             labels[0].TextColor = ILI9341_BLACK;
             labels[0].SetText(F("Press on 'Start' in order to start calibration."));
