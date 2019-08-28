@@ -1,8 +1,6 @@
 #include <Arduino.h>
 #include <URTouch.h>
-#include "Adafruit_GFX.h"
 #include "Adafruit_ILI9341.h"
-#include <Wire.h>
 #include "Adafruit_TCS34725.h"
 #include "EEPROM.h"
 #include "math.h"

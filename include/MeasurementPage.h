@@ -3,6 +3,7 @@ extern Adafruit_TCS34725 tcs;
 extern Adafruit_ILI9341 tft;
 extern LinearRegression model;
 extern CalibrationData calData;
+extern double dilutionCoefficient;
 
 class MeasurementPage : public Page {
     protected:
