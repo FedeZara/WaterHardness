@@ -3,7 +3,6 @@
 #include "Adafruit_ILI9341.h"
 #include "Adafruit_TCS34725.h"
 #include "EEPROM.h"
-#include "math.h"
 
 #include "Point.h"
 #include "CalibrationData.h"
