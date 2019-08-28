@@ -6,7 +6,6 @@
 #include "Adafruit_TCS34725.h"
 #include "EEPROM.h"
 #include "math.h"
-#include "MemoryFree.h"
 
 #include "Point.h"
 #include "CalibrationData.h"
