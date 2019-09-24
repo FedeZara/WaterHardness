@@ -1,3 +1,5 @@
+#include "Configuration.h"
+
 extern NavigationController navigationController;
 extern LinearRegression model;
 extern CalibrationData calData;
@@ -5,7 +7,7 @@ extern CalibrationData calData;
 class EndCalibrationPage : public Page{
     protected:
         void Setup() override{
-            model = LinearRegression(16, calData.data);
+            model = LinearRegression(CALIBRATION_POINTS, calData.data);
 
             SetNumButtons(2);
 

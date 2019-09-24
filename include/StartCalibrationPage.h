@@ -1,3 +1,5 @@
+#include "Configuration.h"
+
 extern NavigationController navigationController;
 extern CalibrationData calData;
 extern LinearRegression model;
@@ -9,7 +11,7 @@ class StartCalibrationPage : public Page{
             EEPROM.get(0, calData);
 
             if(calData.calibrationExists){
-                model = LinearRegression(16, calData.data);
+                model = LinearRegression(CALIBRATION_POINTS, calData.data);
 
                 SetNumButtons(2);
 

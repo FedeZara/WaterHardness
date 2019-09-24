@@ -12,7 +12,7 @@ class MeasurementPage : public Page {
 
         void Setup() override{
             EEPROM.get(0, calData);
-            model = LinearRegression(16, calData.data);
+            model = LinearRegression(CALIBRATION_POINTS, calData.data);
 
             SetNumButtons(2);
 
