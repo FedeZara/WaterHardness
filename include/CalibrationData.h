@@ -1,6 +1,7 @@
 #include "Point.h"
+#include "Configuration.h"
 
 struct CalibrationData {
     bool calibrationExists;
-    Point data[16];
+    Point data[CALIBRATION_POINTS];
 };

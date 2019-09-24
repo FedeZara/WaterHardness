@@ -1,9 +1,10 @@
+#include "Configuration.h"
+
 extern NavigationController navigationController;
 extern Adafruit_TCS34725 tcs;
 extern Adafruit_ILI9341 tft;
 extern LinearRegression model;
 extern CalibrationData calData;
-extern double dilutionCoefficient;
 
 class MeasurementPage : public Page {
     protected:
@@ -73,7 +74,7 @@ class MeasurementPage : public Page {
 
                 uint16_t r, g, b, c;
                 tcs.getRawData(&r, &g, &b, &c);
-                double hardness = model.calculateX(c) * dilutionCoefficient;
+                double hardness = model.calculateX(c) * DILUTION_COEFFICIENT;
 
                 labels[1].SetText(String(hardness) + " F");
                 

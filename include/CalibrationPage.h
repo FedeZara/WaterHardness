@@ -1,3 +1,5 @@
+#include "Configuration.h"
+
 extern NavigationController navigationController;
 extern Adafruit_TCS34725 tcs;
 extern Adafruit_ILI9341 tft;
@@ -7,6 +9,7 @@ class CalibrationPage : public Page{
     protected:
         double currConc;
         int count;
+        double offset;
 
         void Setup() override{
             Page::Setup();
@@ -39,7 +42,9 @@ class CalibrationPage : public Page{
             labels[1].TextColor = ILI9341_BLACK;
             labels[1].SetText("");
 
-            currConc = 2.40;
+            currConc = CALIBRATION_START_VALUE;
+            offset = (CALIBRATION_END_VALUE - CALIBRATION_START_VALUE) / (double)CALIBRATION_POINTS;
+            offset = round(offset*100.0) / 100.0;
             count = -1;
         }
 
@@ -66,9 +71,9 @@ class CalibrationPage : public Page{
                 calData.data[count].x = currConc;
                 calData.data[count].y = double(c);
 
-                currConc += 0.24;
+                currConc += offset;
 
-                if(count == 15){
+                if(count == CALIBRATION_POINTS-1){
                     navigationController.NavigateTo(3);
                     return;
                 }

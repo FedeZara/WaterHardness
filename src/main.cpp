@@ -46,15 +46,20 @@ URTouch ts = URTouch(t_SCK, t_CS, t_MOSI, t_MISO, t_IRQ);
 
 Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
 
-void DefinePages();
-
 NavigationController navigationController;
 
 CalibrationData calData;
 LinearRegression model;
 
-double rSquared;
-double dilutionCoefficient = 10.0;
+void DefinePages(){
+  navigationController.SetNumPages(5);
+
+  navigationController.AddPage(new MainPage(), 0);
+  navigationController.AddPage(new StartCalibrationPage(), 1);
+  navigationController.AddPage(new CalibrationPage(), 2);
+  navigationController.AddPage(new EndCalibrationPage(), 3);
+  navigationController.AddPage(new MeasurementPage(), 4);
+}
 
 void setup()
 {
@@ -77,16 +82,6 @@ void setup()
   DefinePages(); 
 
   navigationController.NavigateTo(1);
-}
-
-void DefinePages(){
-  navigationController.SetNumPages(5);
-
-  navigationController.AddPage(new MainPage(), 0);
-  navigationController.AddPage(new StartCalibrationPage(), 1);
-  navigationController.AddPage(new CalibrationPage(), 2);
-  navigationController.AddPage(new EndCalibrationPage(), 3);
-  navigationController.AddPage(new MeasurementPage(), 4);
 }
 
 void loop(void)
